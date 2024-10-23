@@ -1,51 +1,21 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import HomePage from './HomePage';
+import PokemonList from './PokemonList';
 
 function App() {
-    const [pokemonName, setPokemonName] = useState('');
-    const [pokemonData, setPokemonData] = useState(null);
-    const [error, setError] = useState(null);
-
-    const fetchPokemon = async () => {
-        try {
-            // Make a GET request to the Flask server to fetch Pokémon data
-            const response = await axios.get(`http://127.0.0.1:5000/pokemon/${pokemonName}`);
-            setPokemonData(response.data);
-            setError(null);
-        } catch (err) {
-            setPokemonData(null);
-            setError('Pokémon not found. Please check the name or ID.');
-        }
-    };
-
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Pokédex</h1>
-            <input
-                type="text"
-                value={pokemonName}
-                onChange={(e) => setPokemonName(e.target.value.toLowerCase())}
-                placeholder="Enter Pokémon name or ID"
-            />
-            <button onClick={fetchPokemon}>Search</button>
+        <Router>
+            <nav style={{ padding: '10px', textAlign: 'center' }}>
+                <Link to="/" style={{ margin: '0 10px' }}>Home</Link>
+                <Link to="/list" style={{ margin: '0 10px' }}>List</Link>
+            </nav>
 
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-
-            {pokemonData && (
-                <div>
-                    <h2>{pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1)}</h2>
-                    <img
-                        src={pokemonData.sprites.front_default}
-                        alt={pokemonData.name}
-                    />
-                    <p>Types: {pokemonData.types.map((type) => type.type.name).join(', ')}</p>
-                    <p>Abilities: {pokemonData.abilities.map((ability) => ability.ability.name).join(', ')}</p>
-                    <p>Height: {pokemonData.height}</p>
-                    <p>Weight: {pokemonData.weight}</p>
-                    <p>Base Experience: {pokemonData.base_experience}</p>
-                </div>
-            )}
-        </div>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/list" element={<PokemonList />} />
+            </Routes>
+        </Router>
     );
 }
 
