@@ -28,5 +28,26 @@ def get_pokemon(name):
         #If an error ocurred, return a json response with an error message
         return jsonify({'error': str(e)}), 404
 
+@app.route('/pokemon-list', methods=['GET'])
+def get_all_pokemon():
+    try:
+        #request api
+        response = requests.get('https://pokeapi.co/api/v2/pokemon?limit=1025')
+        response.raise_for_status() #Raise error if request fails
+
+        #Convert response to json
+        pokemon_list = response.json().get('results')
+
+        #formatting response to send only the name of each Pokemon
+        names = [{'name': pokemon.get('name')} for pokemon in pokemon_list]
+
+        return jsonify(names) #return json data
+
+    except requests.exceptions.RequestException as e:
+        #If an error ocurred, return a json response with an error message
+        return jsonify({'error': 'Could not retrieve Pokemon List'}), 500
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
