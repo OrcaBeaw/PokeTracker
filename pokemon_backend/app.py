@@ -38,10 +38,17 @@ def get_all_pokemon():
         #Convert response to json
         pokemon_list = response.json().get('results')
 
-        #formatting response to send only the name of each Pokemon
-        names = [{'name': pokemon.get('name')} for pokemon in pokemon_list]
+        formatted_pokemon_list = []
+        for pokemon in pokemon_list:
+            pokemon_id = pokemon.get('url').split('/')[-2] #extract id from url
+            formatted_pokemon_list.append({
+                'name': pokemon.get('name'),
+                'id': pokemon_id,
+                'front_pic': f'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png',
+            })
 
-        return jsonify(names) #return json data
+        return jsonify(formatted_pokemon_list) #return json data
+
 
     except requests.exceptions.RequestException as e:
         #If an error ocurred, return a json response with an error message
