@@ -8,12 +8,12 @@ function App() {
         <Router>
             <nav style={{ padding: '10px', textAlign: 'center' }}>
                 <Link to="/" style={{ margin: '0 10px' }}>Home</Link>
-                <Link to="/list" style={{ margin: '0 10px' }}>List</Link>
+                <Link to="/pokemon-list" style={{ margin: '0 10px' }}>Pokémon List</Link>
             </nav>
 
             <Routes>
                 <Route path="/" element={<HomePage />} />
-                <Route path="/list" element={<PokemonList />} />
+                <Route path="/pokemon-list" element={<PokemonList />} />
             </Routes>
         </Router>
     );
