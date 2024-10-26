@@ -9,7 +9,7 @@ function PokemonList() {
     //get all pokemon
     const getPokedex = async () => {
         try {
-            const response = await axios.get("http://127.0.0.1:5000/pokemon-list");
+            const response = await axios.get("https://poketracker-backend.onrender.com//pokemon-list");
             setPokemonList(response.data);
             setError(null);
         } catch (err) {

@@ -8,7 +8,7 @@ function HomePage() {
 
     const fetchPokemon = async () => {
         try {
-            const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon/${pokemonName}`);
+            const response = await axios.get(`https://poketracker-backend.onrender.com//pokemon/${pokemonName}`);
             setPokemonData(response.data);
             setError(null);
         } catch (err) {
