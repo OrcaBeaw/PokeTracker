@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import HomePage from './HomePage';
 import PokemonList from './PokemonList';
+import Pokedex from './Pokedex';
 
 function App() {
     return (
@@ -9,11 +10,13 @@ function App() {
             <nav style={{ padding: '10px', textAlign: 'center' }}>
                 <Link to="/" style={{ margin: '0 10px' }}>Home</Link>
                 <Link to="/pokemon-list" style={{ margin: '0 10px' }}>Pokémon List</Link>
+                <Link to="/pokedex" style={{ margin: '0 10px' }}>Pokédex</Link>
             </nav>
 
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/pokemon-list" element={<PokemonList />} />
+                <Route path={"/pokedex"} element={<Pokedex />} />
             </Routes>
         </Router>
     );
