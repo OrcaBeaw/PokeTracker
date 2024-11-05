@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { FiSun, FiMoon } from 'react-icons/fi'; // Importing icons
 import { CaughtPokemonProvider } from './CaughtPokemonContext';
 import HomePage from './HomePage';
 import PokemonList from './PokemonList';
@@ -27,8 +28,8 @@ function App() {
                     <Link to="/" className="nav-link">Home</Link>
                     <Link to="/pokemon-list" className="nav-link">Pokémon List</Link>
                     <Link to="/pokedex" className="nav-link">Pokédex</Link>
-                    <button onClick={toggleDarkMode} className="toggle-dark-mode-btn">
-                        {darkMode ? 'Light Mode' : 'Dark Mode'}
+                    <button onClick={toggleDarkMode} className="toggle-dark-mode-btn" aria-label="Toggle Dark Mode">
+                        {darkMode ? <FiSun size={24} /> : <FiMoon size={24} />}
                     </button>
                 </nav>
                 <Routes>

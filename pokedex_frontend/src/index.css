@@ -17,12 +17,25 @@ body {
 }
 
 .toggle-dark-mode-btn {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  background: none;
   border: none;
-  padding: 8px 12px;
+  color: inherit;
   cursor: pointer;
-  border-radius: 4px;
+  padding: 1px;
+  margin-left: 10px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  transition: color 0.3s ease;
+}
+
+.toggle-dark-mode-btn svg {
+  display: block; /* Remove any extra whitespace around the icon */
+  vertical-align: middle; /* Ensures it aligns with surrounding text */
+}
+
+.toggle-dark-mode-btn:hover {
+  color: #f39c12; /* Pikachu! */
 }
 
 body, nav {
