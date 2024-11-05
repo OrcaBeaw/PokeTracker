@@ -33,7 +33,8 @@ function PokemonList() {
                 textAlign: 'center',
                 height: '200px',
                 width: '150px',
-                boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)'
+                boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)',
+                fontSize: '14px'
             }}>
                 <h3>{`#${pokemon.id} - ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`}</h3>
                 <img src={pokemon.front_pic} alt={pokemon.name} style={{width: '100px', height: '100px'}}/>
