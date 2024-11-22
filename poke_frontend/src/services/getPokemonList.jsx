@@ -1,0 +1,55 @@
+import axios from 'axios';
+import React, { useState, useEffect, useContext } from "react";
+import '../styles/pokemonList.css';
+import { CaughtPokemonContext } from "./caughtPokemonContext";
+
+function GetPokemonList() {
+    const [pokemonList, setPokemonList] = useState([]);
+    const [error, setError] = useState(null);
+
+    const { caughtPokemon, toggleCaughtPokemon } = useContext(CaughtPokemonContext);
+
+    const getPokedex = async () => {
+        try {
+            const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon-list`);
+            setPokemonList(response.data);
+            setError(null);
+        } catch (error) {
+            setPokemonList([]);
+            setError("Pokemon not found");
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getPokedex();
+    }, []);
+
+    const pokedexDisplay = () => {
+        return pokemonList.map(( pokemon ) => (
+            <div key={pokemon.id} className={"displayList"}>
+                <h3>{`#${pokemon.id} - ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`}</h3>
+                <img src={pokemon.front_pic} alt={name} />
+                <div className="caught-container">
+                    <label>Caught?</label>
+                    <input type={"checkbox"}
+                           checked={caughtPokemon.some((p) => p.id === pokemon.id)}
+                           onChange={() => toggleCaughtPokemon( pokemon )}
+                    />
+                </div>
+            </div>
+        ));
+    };
+
+    return (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <h1>Pokémon List</h1>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            <div className={"displayDiv"}>
+                {pokedexDisplay()}
+            </div>
+        </div>
+    );
+}
+
+export default GetPokemonList;

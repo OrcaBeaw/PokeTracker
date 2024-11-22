@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { CaughtPokemonContext } from './CaughtPokemonContext';
-
+import { CaughtPokemonContext } from '../services/caughtPokemonContext.jsx';
+import '../styles/pokemonList.css'
 function Pokedex() {
     const { caughtPokemon } = useContext(CaughtPokemonContext);
 
@@ -8,24 +8,10 @@ function Pokedex() {
         <div style={{textAlign: 'center', marginTop: '50px'}}>
             <h1>Caught Pokémon</h1>
             <h3>Refresh to reset caught Pokémons!</h3>
-            <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center'
-            }}>
+            <div className={"pokedexContainer"}>
                 {caughtPokemon.length > 0 ? (
                     caughtPokemon.map((pokemon) => (
-                        <div key={pokemon.id} style={{
-                            border: '1px solid #ccc',
-                            borderRadius: '8px',
-                            padding: '10px',
-                            margin: '10px',
-                            textAlign: 'center',
-                            height: '200px',
-                            width: '150px',
-                            boxShadow: '0px 0px 5px rgba(0, 0, 0, 0.1)',
-                            fontSize: '14px'
-                        }}>
+                        <div key={pokemon.id} className={"pokedexCard"}>
                             <h3>{`#${pokemon.id} - ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`}</h3>
                             <img src={pokemon.front_pic} alt={pokemon.name} style={{width: '100px', height: '100px'}}/>
                         </div>
