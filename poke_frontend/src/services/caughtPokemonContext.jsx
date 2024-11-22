@@ -9,6 +9,7 @@ export const CaughtPokemonProvider = ({ children }) => {
 
     // Function to add or remove caught Pokémon
     const toggleCaughtPokemon = (pokemon) => {
+
         setCaughtPokemon((prevCaught) => {
             if (prevCaught.find((p) => p.id === pokemon.id)) {
                 // If Pokémon is already caught, remove it

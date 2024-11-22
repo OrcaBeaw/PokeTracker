@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
 import "../styles/index.css"
+import { CaughtPokemonContext } from "./caughtPokemonContext";
+
 
 function Homepage() {
     const [pokemonName, setPokemonName] = useState("");
     const [pokemonData, setPokemonData] = useState(null);
     const [error, setError] = useState(null);
 
+    const { caughtPokemon, toggleCaughtPokemon } = useContext(CaughtPokemonContext);
+
+
     const fetchPokemon = async (event) => {
         event.preventDefault();
         try {
             const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon/${pokemonName}`);
-            setPokemonData(response.data);
+            const data = response.data;
+            data.front_pic = data.sprites.front_default; // Reassign the image property
+            setPokemonData(data);
             setError(null);
         } catch (error) {
             setPokemonData(null);
@@ -19,6 +26,7 @@ function Homepage() {
             console.log(error);
         }
     };
+
 
     return (
         <div className={"searchContainer"}>
@@ -35,17 +43,24 @@ function Homepage() {
 
             {pokemonData && (
                 <div className={"searchResult"}>
-                   <div className={"innerSearchResultContainer"}>
-                    <h2>{pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1)}</h2>
-                    <img src={pokemonData.sprites.front_default} alt={pokemonData.name} />
-                    <p>Height: {pokemonData.height}</p>
-                    <p>Weight: {pokemonData.weight}</p>
-                    <p>Base Experience: {pokemonData.base_experience}</p>
-                    <p>Types: {pokemonData.types.map((typeInfo) => typeInfo.type.name).join(', ')}</p>
-                    <p>Abilities: {pokemonData.abilities.map((abilityInfo) => abilityInfo.ability.name).join(', ')}</p>
-                   <label>Caught?</label>
-                   <input type={"checkbox"}/>
-                   </div>
+                    <div className={"innerSearchResultContainer"}>
+                        <h2>{pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1)}</h2>
+                        <img src={pokemonData.front_pic} alt={pokemonData.name}/>
+                        <p>Height: {pokemonData.height}</p>
+                        <p>Weight: {pokemonData.weight}</p>
+                        <p>Base Experience: {pokemonData.base_experience}</p>
+                        <p>Types: {pokemonData.types.map((typeInfo) => typeInfo.type.name).join(', ')}</p>
+                    </div>
+
+                    <div className="caught-container">
+                        <label>Caught?</label>
+
+                        <input type={"checkbox"}
+                               checked={caughtPokemon.some((pokemon) => pokemon.id === pokemonData.id)}
+                               onChange={() => toggleCaughtPokemon(pokemonData)}
+                        />
+                    </div>
+
                 </div>
             )}
         </div>

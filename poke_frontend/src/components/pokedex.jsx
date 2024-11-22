@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { CaughtPokemonContext } from '../services/caughtPokemonContext.jsx';
 import '../styles/pokemonList.css'
+
 function Pokedex() {
     const { caughtPokemon } = useContext(CaughtPokemonContext);
 

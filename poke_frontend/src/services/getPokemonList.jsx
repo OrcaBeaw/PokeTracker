@@ -44,6 +44,7 @@ function GetPokemonList() {
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h1>Pokémon List</h1>
+            <p>Note: Initial load <em>may</em> be longer due to slow deployment services being used</p>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <div className={"displayDiv"}>
                 {pokedexDisplay()}
