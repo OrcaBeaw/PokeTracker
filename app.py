@@ -2,6 +2,9 @@ from flask import Flask, jsonify, make_response
 
 app = Flask(__name__)
 
+# Add CORS for all routes, allowing requests from any origin
+CORS(app, resources={r"/*": {"origins": "*"}})
+
 @app.after_request
 def add_cors_headers(response):
     response.headers["Access-Control-Allow-Origin"] = "*"
@@ -9,9 +12,6 @@ def add_cors_headers(response):
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
-
-# Add CORS for all routes, allowing requests from any origin
-CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Basic route to test server
 @app.route('/')
