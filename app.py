@@ -1,12 +1,13 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
-
 from flask import Flask, jsonify
 import requests
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Add CORS to allow requests from the frontend
+
+# Add CORS for all routes, allowing requests from any origin
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Basic route to test server
 @app.route('/')
@@ -22,7 +23,7 @@ def get_pokemon(name):
         pokemon_data = response.json()
         return jsonify(pokemon_data)
     except requests.exceptions.RequestException as e:
-        return jsonify({'error': str(e)}), 404
+        return jsonify({'error': f"Failed to fetch data for Pokémon '{name}': {str(e)}"}), 404
 
 
 @app.route('/pokemon-list', methods=['GET'])
@@ -55,12 +56,14 @@ def get_all_pokemon():
 
         return jsonify(formatted_pokemon_list)
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
     except requests.exceptions.RequestException as e:
         return jsonify({'error': 'Could not retrieve Pokémon list'}), 500
 
+    except Exception as e:
+        return jsonify({'error': f"Unexpected error: {str(e)}"}), 500
+
+
 if __name__ == '__main__':
+    # Define port and host for deployment
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
