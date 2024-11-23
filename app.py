@@ -24,7 +24,6 @@ def get_pokemon(name):
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 404
 
-
 @app.route('/pokemon-list', methods=['GET'])
 def get_all_pokemon():
     try:
@@ -53,7 +52,9 @@ def get_all_pokemon():
         with ThreadPoolExecutor() as executor:
             formatted_pokemon_list = list(executor.map(fetch_pokemon_details, pokemon_list))
 
-        return jsonify(formatted_pokemon_list)
+        response = jsonify(formatted_pokemon_list)
+        response.set_cookie('__vercel_live_token', 'eDJ1z8MqXEK1nxhbJbJ9LKCF', samesite='None', secure=True)
+        return response
 
     except requests.exceptions.RequestException as e:
         return jsonify({'error': 'Could not retrieve Pokémon list'}), 500
