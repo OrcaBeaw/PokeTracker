@@ -6,19 +6,27 @@ import {CaughtPokemonContext} from "./caughtPokemonContext";
 function GetPokemonList() {
     const [pokemonList, setPokemonList] = useState([]);
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const {caughtPokemon, toggleCaughtPokemon} = useContext(CaughtPokemonContext);
 
     const getPokedex = async () => {
         try {
-            const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon-list`);
-            const data = response.data;
-            setPokemonList(data);
+            setIsLoading(true);
+            const response = await axios.get('https://poketracker-backend.onrender.com/pokemon-list', {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            setPokemonList(response.data);
             setError(null);
         } catch (error) {
+            console.error('Error fetching Pokemon:', error);
             setPokemonList([]);
-            setError("Pokemon not found");
-            console.log(error);
+            setError("Failed to load Pokemon. Please try again later.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -46,9 +54,10 @@ function GetPokemonList() {
         <div style={{textAlign: 'center', marginTop: '50px'}}>
             <h1>Pokémon List</h1>
             <p>Note: Initial load <em>may</em> be longer due to slow deployment services being used</p>
+            {isLoading && <p>Loading Pokémon...</p>}
             {error && <p style={{color: 'red'}}>{error}</p>}
             <div className={"displayDiv"}>
-                {pokedexDisplay()}
+                {!isLoading && pokedexDisplay()}
             </div>
         </div>
     );
