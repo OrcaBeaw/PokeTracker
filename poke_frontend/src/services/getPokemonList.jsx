@@ -13,6 +13,9 @@ function GetPokemonList() {
         try {
             const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon-list`);
             const data = response.data;
+            if (Array.isArray(data.types)) {
+                data.types = data.types.map((typeInfo) => typeInfo.type.name).join(', ');
+            }
             setPokemonList(data);
             setError(null);
         } catch (error) {
@@ -30,7 +33,7 @@ function GetPokemonList() {
         return pokemonList.map((pokemon) => (
             <div key={pokemon.id} className={"displayList"}>
                 <h3>{`#${pokemon.id} - ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`}</h3>
-                <img src={pokemon.front_pic} alt={name}/>
+                <img src={pokemon.front_pic} alt={pokemon.name}/>
                 <div className="caught-container">
                     <label>Caught?</label>
                     <input type={"checkbox"}
