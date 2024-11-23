@@ -55,11 +55,11 @@ def get_all_pokemon():
 
         return jsonify(formatted_pokemon_list)
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
     except requests.exceptions.RequestException as e:
         return jsonify({'error': 'Could not retrieve Pokémon list'}), 500
+
+    except Exception as e:
+        return jsonify({'error': 'An unexpected error occurred'}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
