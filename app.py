@@ -1,19 +1,19 @@
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
 
-# Add CORS for all routes, allowing requests from any origin
-CORS(app, resources={r"/*": {"origins": "*"}})
+# Enable CORS and allow credentials
+CORS(app, supports_credentials=True)
 
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = "https://poketracker-frontend.vercel.app"  # Replace with your frontend's domain
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
 
-# Basic route to test server
 @app.route('/')
 def home():
     return 'Hello, welcome to the Pokémon API!'
