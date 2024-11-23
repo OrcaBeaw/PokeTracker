@@ -1,19 +1,24 @@
-from flask import Flask, jsonify
+import os
+from concurrent.futures import ThreadPoolExecutor
+from flask import Flask, jsonify, make_response
+import requests
 from flask_cors import CORS
 
 app = Flask(__name__)
 
-# Enable CORS and allow credentials
+# Enable CORS with support for credentials
 CORS(app, supports_credentials=True)
 
+# After request to add CORS headers
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "https://poketracker-frontend.vercel.app"  # Replace with your frontend's domain
+    response.headers["Access-Control-Allow-Origin"] = "https://poke-tracker.vercel.app"  # Replace with your frontend URL
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
 
+# Basic route to test server
 @app.route('/')
 def home():
     return 'Hello, welcome to the Pokémon API!'
@@ -27,9 +32,9 @@ def get_pokemon(name):
         pokemon_data = response.json()
         return jsonify(pokemon_data)
     except requests.exceptions.RequestException as e:
-        return jsonify({'error': f"Failed to fetch data for Pokémon '{name}': {str(e)}"}), 404
+        return jsonify({'error': str(e)}), 404
 
-
+# Route to get all Pokémon list
 @app.route('/pokemon-list', methods=['GET'])
 def get_all_pokemon():
     try:
@@ -60,14 +65,19 @@ def get_all_pokemon():
 
         return jsonify(formatted_pokemon_list)
 
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
     except requests.exceptions.RequestException as e:
         return jsonify({'error': 'Could not retrieve Pokémon list'}), 500
 
-    except Exception as e:
-        return jsonify({'error': f"Unexpected error: {str(e)}"}), 500
-
+# Route to set a cookie for testing (with SameSite=None and Secure=True)
+@app.route('/set-cookie')
+def set_cookie():
+    response = make_response(jsonify({"message": "Cookie set"}))
+    response.set_cookie('test_cookie', 'test_value', samesite='None', secure=True)  # Add secure and samesite
+    return response
 
 if __name__ == '__main__':
-    # Define port and host for deployment
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, ssl_context='adhoc')  # Run with HTTPS for secure cookies
