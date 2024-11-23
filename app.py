@@ -40,7 +40,8 @@ def get_all_pokemon():
             formatted_pokemon_list.append({
                 'name': pokemon.get('name'),
                 'id': pokemon_id,
-                'front_pic': f'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png'
+                'front_pic': f'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png',
+                'types': pokemon.get('types')
             })
 
         return jsonify(formatted_pokemon_list)  # Return JSON data containing name, ID, and image URL

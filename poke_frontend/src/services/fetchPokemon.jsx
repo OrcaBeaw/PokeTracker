@@ -1,7 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, {useState, useContext} from "react";
 import axios from "axios";
 import "../styles/index.css"
-import { CaughtPokemonContext } from "./caughtPokemonContext";
+import {CaughtPokemonContext} from "./caughtPokemonContext";
 
 
 function Homepage() {
@@ -9,7 +9,7 @@ function Homepage() {
     const [pokemonData, setPokemonData] = useState(null);
     const [error, setError] = useState(null);
 
-    const { caughtPokemon, toggleCaughtPokemon } = useContext(CaughtPokemonContext);
+    const {caughtPokemon, toggleCaughtPokemon} = useContext(CaughtPokemonContext);
 
 
     const fetchPokemon = async (event) => {
@@ -18,6 +18,7 @@ function Homepage() {
             const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon/${pokemonName}`);
             const data = response.data;
             data.front_pic = data.sprites.front_default; // Reassign the image property
+            data.types = data.types.map((typeInfo) => typeInfo.type.name).join(', '); // Reassign the types property
             setPokemonData(data);
             setError(null);
         } catch (error) {
@@ -49,7 +50,7 @@ function Homepage() {
                         <p>Height: {pokemonData.height}</p>
                         <p>Weight: {pokemonData.weight}</p>
                         <p>Base Experience: {pokemonData.base_experience}</p>
-                        <p>Types: {pokemonData.types.map((typeInfo) => typeInfo.type.name).join(', ')}</p>
+                        <p>Types: {pokemonData.types}</p>
                     </div>
 
                     <div className="caught-container">

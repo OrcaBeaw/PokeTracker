@@ -16,6 +16,7 @@ export const CaughtPokemonProvider = ({ children }) => {
                 return prevCaught.filter((p) => p.id !== pokemon.id);
             } else {
                 // Add Pokémon if not already caught
+                console.log(pokemon.types);
                 return [...prevCaught, pokemon];
             }
         });
