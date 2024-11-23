@@ -16,7 +16,12 @@ function Pokedex() {
                         <div key={pokemon.id} className={"pokedexCard"}>
                             <h3>{`#${pokemon.id} - ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`}</h3>
                             <img src={pokemon.front_pic} alt={pokemon.name} style={{width: '100px', height: '100px'}}/>
-                            <p>Types: {`${pokemon.types}`}</p>
+                           <div className={"types"}>
+                               <p>Types:</p>
+                               <div>
+                                  {`${pokemon.types}`}
+                               </div>
+                           </div>
                         </div>
                     ))
                 ) : (

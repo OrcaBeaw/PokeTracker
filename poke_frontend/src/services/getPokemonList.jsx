@@ -11,7 +11,7 @@ function GetPokemonList() {
 
     const getPokedex = async () => {
         try {
-            const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon-list`);
+            const response = await axios.get(`http://127.0.0.1:5000/pokemon-list`);
             const data = response.data;
             setPokemonList(data);
             setError(null);
