@@ -13,6 +13,7 @@ function GetPokemonList() {
         try {
             const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon-list`);
             const data = response.data;
+            data.types = data.types.map((typeInfo) => typeInfo.type.name).join(', ');
             setPokemonList(data);
             setError(null);
         } catch (error) {
