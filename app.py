@@ -33,6 +33,14 @@ def get_all_pokemon():
         # Convert response to JSON
         pokemon_list = response.json().get('results', [])
 
+         # Fetch Pokémon details for type information
+        pokemon_details = requests.get(f'https://pokeapi.co/api/v2/pokemon/{pokemon_id}/', timeout=10)
+        pokemon_details.raise_for_status()
+        details_json = pokemon_details.json()
+
+                    # Extract types
+        types = [t['type']['name'] for t in details_json.get('types', [])]
+
         # Create a list that includes name, ID, and front picture for each Pokémon
         formatted_pokemon_list = []
         for pokemon in pokemon_list:
@@ -41,7 +49,7 @@ def get_all_pokemon():
                 'name': pokemon.get('name'),
                 'id': pokemon_id,
                 'front_pic': f'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png',
-                'types': pokemon.get('types')
+                'types': types
             })
 
         return jsonify(formatted_pokemon_list)  # Return JSON data containing name, ID, and image URL
