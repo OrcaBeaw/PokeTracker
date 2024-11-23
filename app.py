@@ -24,40 +24,42 @@ def get_pokemon(name):
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 404
 
+
 @app.route('/pokemon-list', methods=['GET'])
 def get_all_pokemon():
     try:
-        # Fetch list of all Pokémon (URLs)
+        # Request data from PokeAPI with a timeout to prevent hanging requests
         response = requests.get(url='https://pokeapi.co/api/v2/pokemon?limit=1025', timeout=10)
         response.raise_for_status()
+
+        # Convert response to JSON
         pokemon_list = response.json().get('results', [])
 
-        # Define function to fetch Pokémon details
-        def fetch_pokemon_details(pokemon):
-            pokemon_id = pokemon.get('url').split('/')[-2]
-            details_response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{pokemon_id}/', timeout=10)
-            details_response.raise_for_status()
-            details_json = details_response.json()
+        # Create a list that includes name, ID, front picture, and types for each Pokémon
+        formatted_pokemon_list = []
+        for pokemon in pokemon_list:
+            pokemon_id = pokemon.get('url').split('/')[-2]  # Extract ID from URL
 
-            # Extract data
+            # Fetch Pokémon details for type information
+            pokemon_details = requests.get(f'https://pokeapi.co/api/v2/pokemon/{pokemon_id}/', timeout=10)
+            pokemon_details.raise_for_status()
+            details_json = pokemon_details.json()
+
+            # Extract types
             types = [t['type']['name'] for t in details_json.get('types', [])]
-            return {
+
+            formatted_pokemon_list.append({
                 'name': pokemon.get('name'),
                 'id': pokemon_id,
                 'front_pic': f'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_id}.png',
-                'types': types
-            }
+                'types': types  # Add the types here
+            })
 
-        # Use ThreadPoolExecutor to parallelize requests
-        with ThreadPoolExecutor() as executor:
-            formatted_pokemon_list = list(executor.map(fetch_pokemon_details, pokemon_list))
-
+        # Return JSON data containing name, ID, image URL, and types
         return jsonify(formatted_pokemon_list)
 
-    except requests.exceptions.RequestException as e:
-        return jsonify({'error': 'Could not retrieve Pokémon list'}), 500
     except Exception as e:
-        return jsonify({'error': 'An unexpected error occurred'}), 500
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
