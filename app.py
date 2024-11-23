@@ -7,15 +7,14 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-# Configure CORS with specific settings for Vercel frontend
-CORS(app, resources={
-    r"/*": {
-        "origins": ["https://poke-tracker.vercel.app"],
-        "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"],
-        "supports_credentials": True
-    }
-})
+# Configure CORS at the application level
+CORS(app,
+     origins=["https://poke-tracker.vercel.app"],
+     methods=["GET", "POST", "OPTIONS"],
+     allow_headers=["Content-Type"],
+     supports_credentials=True,
+     expose_headers=["Access-Control-Allow-Origin"],
+     max_age=600)
 
 # Basic route to test server
 @app.route('/')
@@ -28,10 +27,9 @@ def get_pokemon(name):
     try:
         response = requests.get(f'https://pokeapi.co/api/v2/pokemon/{name}', timeout=10)
         response.raise_for_status()
-        pokemon_data = response.json()
-        return jsonify(pokemon_data)
+        return jsonify(response.json())
     except requests.exceptions.RequestException as e:
-        return make_response(jsonify({'error': str(e)}), 404)
+        return jsonify({'error': str(e)}), 404
 
 @app.route('/pokemon-list', methods=['GET'])
 def get_all_pokemon():
@@ -61,34 +59,27 @@ def get_all_pokemon():
         with ThreadPoolExecutor() as executor:
             formatted_pokemon_list = list(executor.map(fetch_pokemon_details, pokemon_list))
 
-        # Create response with proper CORS headers
-        response = make_response(jsonify(formatted_pokemon_list))
-
-        # Set CORS headers explicitly
-        response.headers.add('Access-Control-Allow-Origin', 'https://poke-tracker.vercel.app')
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
-
-        return response
+        return jsonify(formatted_pokemon_list)
 
     except requests.exceptions.RequestException as e:
-        error_response = make_response(jsonify({'error': 'Could not retrieve Pokémon list'}), 500)
-        error_response.headers.add('Access-Control-Allow-Origin', 'https://poke-tracker.vercel.app')
-        error_response.headers.add('Access-Control-Allow-Credentials', 'true')
-        return error_response
-
+        return jsonify({'error': 'Could not retrieve Pokémon list'}), 500
     except Exception as e:
-        error_response = make_response(jsonify({'error': 'An unexpected error occurred'}), 500)
-        error_response.headers.add('Access-Control-Allow-Origin', 'https://poke-tracker.vercel.app')
-        error_response.headers.add('Access-Control-Allow-Credentials', 'true')
-        return error_response
+        return jsonify({'error': 'An unexpected error occurred'}), 500
 
-# Add OPTIONS route handler for preflight requests
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'https://poke-tracker.vercel.app')
-    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    """Ensure CORS headers are set correctly on all responses"""
+    # Explicitly set CORS headers
+    response.headers.set('Access-Control-Allow-Origin', 'https://poke-tracker.vercel.app')
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.set('Access-Control-Allow-Credentials', 'true')
+
+    # Remove any existing SameSite cookies
+    for cookie in response.headers.getlist('Set-Cookie'):
+        if '__vercel_live_token' in cookie:
+            response.headers.remove('Set-Cookie')
+
     return response
 
 if __name__ == '__main__':
