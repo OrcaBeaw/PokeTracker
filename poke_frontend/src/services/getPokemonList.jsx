@@ -11,7 +11,7 @@ function GetPokemonList() {
 
     const getPokedex = async () => {
         try {
-            const response = await axios.get(`https://poketracker-backend.onrender.com/pokemon-list`);
+            const response = await axios.get(`https://poketracker-4xhm.onrender.com/pokemon-list`);
             const data = response.data;
             if (Array.isArray(data.types)) {
                 data.types = data.types.map((typeInfo) => typeInfo.type.name).join(', ');
