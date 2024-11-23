@@ -32,7 +32,7 @@ function Homepage() {
     return (
         <div className={"searchContainer"}>
             <h1>Pokedex</h1>
-            <h3>This project is being migrated from flask to node.js, starting on 11/23. It should be done by 11/24. Than you.</h3>
+            <h3>This project is being migrated from flask to node.js, starting on 11/23. It should be done by 11/24. Thank you.</h3>
             <form className={"inputContainer"} onSubmit={fetchPokemon}>
                 <input
                     type={"text"}
