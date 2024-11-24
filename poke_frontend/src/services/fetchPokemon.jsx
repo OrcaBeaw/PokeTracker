@@ -15,7 +15,7 @@ function Homepage() {
     const fetchPokemon = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.get(`http://127.0.0.1:5000/pokemon/${pokemonName}`);
+            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
             const data = response.data;
             data.front_pic = data.sprites.front_default; // Reassign the image property
             data.types = data.types.map((typeInfo) => typeInfo.type.name).join(', '); // Reassign the types property

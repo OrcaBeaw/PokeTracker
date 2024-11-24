@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState, useEffect, useContext} from "react";
+import {useState, useEffect, useContext} from "react";
 import '../styles/pokemonList.css';
 import {CaughtPokemonContext} from "./caughtPokemonContext";
 
@@ -11,16 +11,22 @@ function GetPokemonList() {
 
     const getPokedex = async () => {
         try {
-            const response = await axios.get(`http://127.0.0.1:5000/pokemon-list`);
+            const response = await axios.get(`https://pokeapi.co/api/v2/pokemon?limit=1025`);
             const data = response.data;
-            if (Array.isArray(data.types)) {
-                data.types = data.types.map((typeInfo) => typeInfo.type.name).join(', ');
-            }
-            setPokemonList(data);
+            const detailedPokemonList = await Promise.all(data.results.map(async (pokemon) => {
+                const pokemonDetails = await axios.get(pokemon.url);
+                return {
+                    ...pokemon,
+                    id: pokemonDetails.data.id,
+                    front_pic: pokemonDetails.data.sprites.front_default,
+                    types: pokemonDetails.data.types.map((typeInfo) => typeInfo.type.name).join(', ')
+                };
+            }));
+            setPokemonList(detailedPokemonList);
             setError(null);
         } catch (error) {
             setPokemonList([]);
-            setError("Pokemon not found");
+            setError("Error fetching Pokemon list");
             console.log(error);
         }
     };
@@ -30,14 +36,14 @@ function GetPokemonList() {
     }, []);
 
     const pokedexDisplay = () => {
-        return pokemonList.map((pokemon) => (
-            <div key={pokemon.id} className={"displayList"}>
-                <h3>{`#${pokemon.id} - ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`}</h3>
+        return pokemonList.map((pokemon, index) => (
+            <div key={index} className={"displayList"}>
+                <h3>{`#${index + 1} - ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}`}</h3>
                 <img src={pokemon.front_pic} alt={pokemon.name}/>
                 <div className="caught-container">
                     <label>Caught?</label>
                     <input type={"checkbox"}
-                           checked={caughtPokemon.some((p) => p.id === pokemon.id)}
+                           checked={caughtPokemon.some((p) => p.name === pokemon.name)}
                            onChange={() => toggleCaughtPokemon(pokemon)}
                     />
                 </div>
