@@ -8,16 +8,14 @@ import Pokedex from "./components/pokedex.jsx";
 import {CaughtPokemonProvider} from "./services/caughtPokemonContext.jsx";
 
 function App() {
-
-
     const [darkMode, setDarkMode] = useState(() => {
         const savedMode = localStorage.getItem("darkMode");
         return savedMode ? JSON.parse(savedMode) : false;
-    })
+    });
 
     const toggleDarkMode = () => {
         setDarkMode((prevMode) => !prevMode);
-    }
+    };
 
     useEffect(() => {
         localStorage.setItem("darkMode", JSON.stringify(darkMode));
@@ -26,7 +24,7 @@ function App() {
 
     return (
         <CaughtPokemonProvider>
-            <Router>
+            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <nav className={"custom-navbar"}>
                     <Link to={"/"}>Home</Link>
                     <Link to={"/pokemonList"}>Pokemon List</Link>
@@ -42,7 +40,7 @@ function App() {
                 </Routes>
             </Router>
         </CaughtPokemonProvider>
-    )
+    );
 }
 
-export default App
+export default App;
