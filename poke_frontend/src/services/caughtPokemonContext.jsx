@@ -6,7 +6,6 @@ export const CaughtPokemonContext = createContext();
 // Context provider component
 export const CaughtPokemonProvider = ({ children }) => {
     const [caughtPokemon, setCaughtPokemon] = useState([]);
-
     // Function to add or remove caught Pokémon
     const toggleCaughtPokemon = (pokemon) => {
 
